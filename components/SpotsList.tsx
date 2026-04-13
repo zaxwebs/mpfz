@@ -143,20 +143,9 @@ export default function SpotsList() {
     }
 
     return locations.filter((location) =>
-      [
-        location.coast,
-        location.direction,
-        location.distanceKm,
-        location.depthMtr,
-        location.latitudeDms,
-        location.longitudeDms,
-        formatLocationCoordinates(location, coordinateFormat)
-      ]
-        .join(" ")
-        .toLowerCase()
-        .includes(normalizedQuery)
+      location.coast.toLowerCase().includes(normalizedQuery)
     );
-  }, [coordinateFormat, data, query, showStarredOnly, starredSet]);
+  }, [data, query, showStarredOnly, starredSet]);
 
   async function copySpot(location: PfzLocation) {
     try {
@@ -198,12 +187,11 @@ export default function SpotsList() {
         </div>
         <div className="spotsTools">
           <label className="spotsSearch">
-            <span>Find a spot</span>
             <input
               className="searchInput"
               disabled={isLoading}
               onChange={(event) => setQuery(event.target.value)}
-              placeholder="Search village, coordinates, depth"
+              placeholder="Type to search..."
               value={query}
             />
           </label>

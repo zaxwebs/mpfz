@@ -297,20 +297,9 @@ export default function PfzMap() {
     }
 
     return locations.filter((location) =>
-      [
-        location.coast,
-        location.direction,
-        location.distanceKm,
-        location.depthMtr,
-        location.latitudeDms,
-        location.longitudeDms,
-        formatLocationCoordinates(location, coordinateFormat)
-      ]
-        .join(" ")
-        .toLowerCase()
-        .includes(normalizedQuery)
+      location.coast.toLowerCase().includes(normalizedQuery)
     );
-  }, [coordinateFormat, filteredLocations, sidebarQuery]);
+  }, [filteredLocations, sidebarQuery]);
 
   const selectedLocation =
     (data?.locations ?? []).find((location) => location.id === selectedId) ?? null;
@@ -634,12 +623,11 @@ export default function PfzMap() {
 
         <div className="mapSpotsTools">
           <label className="mapSpotsSearch">
-            <span>Find a spot</span>
             <input
               className="searchInput"
               disabled={isLoading}
               onChange={(event) => setSidebarQuery(event.target.value)}
-              placeholder="Search village or coordinates"
+              placeholder="Type to search..."
               value={sidebarQuery}
             />
           </label>
