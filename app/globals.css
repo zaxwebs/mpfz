@@ -1,0 +1,1200 @@
+:root {
+  --ink: #222222;
+  --muted: #717171;
+  --panel: #ffffff;
+  --line: #dddddd;
+  --accent: #ff385c;
+  --accent-dark: #e0004d;
+  --blue: #ff385c;
+  --blue-dark: #e0004d;
+  --teal: #00a699;
+  --red: #d93025;
+  --nav-height: 62px;
+  --shadow: 0 6px 20px rgba(0, 0, 0, 0.14);
+  --soft-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  background: #f7f7f7;
+  color: var(--ink);
+  font-family: var(--font-geist), Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  letter-spacing: 0;
+}
+
+button,
+input {
+  font: inherit;
+  letter-spacing: 0;
+}
+
+a {
+  color: inherit;
+}
+
+.appNav {
+  align-items: center;
+  background: #ffffff;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  gap: 16px;
+  height: var(--nav-height);
+  justify-content: space-between;
+  padding: 0 24px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.appBrand {
+  align-items: baseline;
+  color: var(--ink);
+  display: inline-flex;
+  font-size: 16px;
+  font-weight: 800;
+  gap: 8px;
+  position: relative;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.appBrandDate {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.appNavLinks {
+  background: #f7f7f7;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+}
+
+.appNavLink {
+  border-radius: 999px;
+  color: var(--muted);
+  font-weight: 800;
+  min-width: 76px;
+  padding: 9px 14px;
+  text-align: center;
+  text-decoration: none;
+}
+
+.appNavLink:hover,
+.appNavLink.active {
+  background: #ffffff;
+  box-shadow: var(--soft-shadow);
+  color: var(--ink);
+}
+
+.aboutPage {
+  display: grid;
+  gap: 24px;
+  margin: 0 auto;
+  max-width: 1060px;
+  min-height: calc(100vh - var(--nav-height));
+  padding: 24px 18px 42px;
+}
+
+.aboutIntro {
+  align-items: stretch;
+  display: grid;
+  gap: 24px;
+  grid-template-columns: minmax(0, 0.9fr) minmax(320px, 1.1fr);
+}
+
+.aboutCopy {
+  align-content: center;
+  display: grid;
+  gap: 16px;
+  min-width: 0;
+}
+
+.aboutCopy h1 {
+  font-size: 42px;
+  line-height: 1.06;
+  margin: 0;
+  max-width: 760px;
+}
+
+.aboutCopy p {
+  color: var(--muted);
+  font-size: 17px;
+  line-height: 1.55;
+  margin: 0;
+  max-width: 620px;
+}
+
+.aboutSourceLink {
+  align-items: center;
+  background: var(--ink);
+  border: 1px solid var(--ink);
+  border-radius: 8px;
+  color: #ffffff;
+  display: inline-flex;
+  font-weight: 800;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 16px;
+  text-decoration: none;
+  width: fit-content;
+}
+
+.aboutSourceLink:hover {
+  background: #000000;
+}
+
+.aboutImage {
+  border-radius: 8px;
+  margin: 0;
+  min-height: 360px;
+  overflow: hidden;
+}
+
+.aboutImage img {
+  display: block;
+  height: 100%;
+  object-fit: cover;
+  width: 100%;
+}
+
+.aboutNotes {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.aboutNote {
+  background: #ffffff;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  display: grid;
+  gap: 8px;
+  padding: 18px;
+}
+
+.aboutNote strong {
+  font-size: 16px;
+  line-height: 1.2;
+}
+
+.aboutNote p {
+  color: var(--muted);
+  line-height: 1.45;
+  margin: 0;
+}
+
+.shell {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  height: calc(100vh - var(--nav-height));
+  min-height: calc(100vh - var(--nav-height));
+  overflow: hidden;
+}
+
+.mapShellLoading {
+  display: block;
+}
+
+.mapStage {
+  min-height: calc(100vh - var(--nav-height));
+  position: relative;
+}
+
+.leafletMap {
+  height: calc(100vh - var(--nav-height));
+  width: 100%;
+}
+
+.mapLoading {
+  align-items: center;
+  background: #f7f7f7;
+  display: flex;
+  justify-content: center;
+  min-height: calc(100vh - var(--nav-height));
+  padding: 18px;
+}
+
+.mapLoadingPanel {
+  align-items: center;
+  background: #ffffff;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  box-shadow: var(--soft-shadow);
+  display: grid;
+  gap: 8px;
+  justify-items: center;
+  min-width: min(320px, 100%);
+  padding: 24px;
+}
+
+.mapLoadingPanel strong {
+  font-size: 18px;
+}
+
+.mapLoadingPanel span:last-child {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.errorText {
+  background: #fce8e6;
+  border: 1px solid #f6aea9;
+  border-radius: 8px;
+  color: var(--red);
+  font-size: 15px;
+  line-height: 1.4;
+  margin: 0;
+  padding: 12px;
+}
+
+.emptyState {
+  align-items: flex-start;
+  background: #ffffff;
+  border: 1px dashed #dddddd;
+  border-radius: 8px;
+  color: var(--muted);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  justify-content: flex-start;
+  line-height: 1.4;
+  margin: 8px 0 0;
+  padding: 14px;
+}
+
+.emptyState p {
+  margin: 0;
+}
+
+.emptyState button {
+  background: var(--ink);
+  border: 1px solid var(--ink);
+  border-radius: 8px;
+  color: #ffffff;
+  cursor: pointer;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 800;
+  min-height: 36px;
+  padding: 0 12px;
+}
+
+.emptyState button:hover {
+  background: #000000;
+}
+
+.searchInput {
+  background: #ffffff;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--ink);
+  font-size: 15px;
+  min-height: 46px;
+  outline: 0;
+  padding: 0 16px;
+  width: 100%;
+}
+
+.searchInput:focus {
+  border-color: var(--ink);
+  box-shadow: 0 0 0 1px var(--ink), var(--soft-shadow);
+}
+
+.searchInput:disabled {
+  background: #f2f2f2;
+  color: var(--muted);
+  cursor: wait;
+}
+
+.bearingPill {
+  background: #f7f7f7;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--ink);
+  flex: 0 0 auto;
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1;
+  min-width: 30px;
+  padding: 5px 7px;
+  text-align: center;
+}
+
+.mapAlerts {
+  display: grid;
+  gap: 8px;
+  left: 22px;
+  max-width: min(420px, calc(100% - 44px));
+  position: absolute;
+  top: 22px;
+  z-index: 450;
+}
+
+.mapStatus {
+  align-items: center;
+  background: #ffffff;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  box-shadow: var(--shadow);
+  color: var(--ink);
+  display: inline-flex;
+  font-size: 13px;
+  font-weight: 800;
+  gap: 8px;
+  left: 22px;
+  min-height: 42px;
+  padding: 0 14px;
+  position: absolute;
+  top: 22px;
+  z-index: 440;
+}
+
+.mapStarredFilter {
+  position: absolute;
+  right: 22px;
+  top: 22px;
+  z-index: 450;
+}
+
+.mapStarredFilter .starredFilter {
+  box-shadow: var(--shadow);
+}
+
+.loadingDot {
+  animation: loadingPulse 900ms ease-in-out infinite;
+  background: var(--accent);
+  border-radius: 999px;
+  display: inline-block;
+  height: 9px;
+  width: 9px;
+}
+
+@keyframes loadingPulse {
+  50% {
+    opacity: 0.4;
+    transform: scale(0.75);
+  }
+}
+
+.locateButton {
+  align-items: center;
+  background: #ffffff;
+  border: 0;
+  border-radius: 8px;
+  bottom: 22px;
+  box-shadow: var(--shadow);
+  color: var(--ink);
+  cursor: pointer;
+  display: flex;
+  height: 46px;
+  justify-content: center;
+  padding: 0;
+  position: absolute;
+  right: 22px;
+  width: 46px;
+  z-index: 450;
+}
+
+.locateButton:hover {
+  background: #f7f7f7;
+}
+
+.locateButton:disabled {
+  color: #9aa0a6;
+  cursor: wait;
+}
+
+.locateIcon {
+  display: block;
+  height: 20px;
+  width: 20px;
+}
+
+.locateButton.locating .locateIcon {
+  animation: locatingPulse 900ms ease-in-out infinite;
+}
+
+@keyframes locatingPulse {
+  50% {
+    opacity: 0.45;
+    transform: scale(0.92);
+  }
+}
+
+.mapNavControls {
+  align-items: center;
+  background: #ffffff;
+  border-radius: 999px;
+  bottom: 22px;
+  box-shadow: var(--shadow);
+  display: flex;
+  gap: 8px;
+  left: 50%;
+  padding: 6px;
+  position: absolute;
+  transform: translateX(-50%);
+  z-index: 450;
+}
+
+.mapNavControls button {
+  background: #ffffff;
+  border: 0;
+  border-radius: 999px;
+  color: var(--ink);
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 700;
+  min-height: 36px;
+  padding: 0 12px;
+}
+
+.mapNavControls button:hover {
+  background: #f7f7f7;
+}
+
+.mapNavControls button:disabled {
+  color: #9aa0a6;
+  cursor: not-allowed;
+}
+
+.mapNavControls span {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+  min-width: 48px;
+  text-align: center;
+}
+
+.popupContent {
+  display: grid;
+  font-size: 12px;
+  gap: 4px;
+  line-height: 1.25;
+  min-width: 190px;
+}
+
+.popupContent strong {
+  font-size: 14px;
+  line-height: 1.15;
+  margin-bottom: 2px;
+}
+
+.popupActions {
+  display: flex;
+  gap: 8px;
+  margin-top: 5px;
+}
+
+.popupActionButton {
+  align-items: center;
+  background: #ffffff;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--ink);
+  cursor: pointer;
+  display: inline-flex;
+  flex: 1 1 0;
+  font-size: 12px;
+  gap: 6px;
+  font-weight: 800;
+  justify-content: center;
+  min-height: 32px;
+  padding: 0 10px;
+  white-space: nowrap;
+}
+
+.popupActionButton:hover {
+  background: #f7f7f7;
+  border-color: #b0b0b0;
+}
+
+.popupStarButton {
+  color: #717171;
+}
+
+.popupStarButton.active {
+  background: #fff0f3;
+  border-color: #ffc6d1;
+  color: var(--accent);
+}
+
+.popupCopyButton {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: #ffffff;
+}
+
+.popupCopyButton:hover {
+  background: #000000;
+  border-color: #000000;
+}
+
+.leaflet-control-zoom {
+  border: 0 !important;
+  box-shadow: var(--shadow);
+}
+
+.leaflet-control-zoom a {
+  border: 0 !important;
+  height: 42px !important;
+  line-height: 42px !important;
+  width: 42px !important;
+}
+
+.leaflet-popup-content {
+  margin: 16px 18px;
+}
+
+.markerNameTooltip {
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid rgba(221, 221, 221, 0.95);
+  border-radius: 8px;
+  box-shadow: var(--soft-shadow);
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 7px;
+}
+
+.markerNameTooltip::before {
+  display: none;
+}
+
+.spotsPage {
+  align-content: start;
+  display: grid;
+  gap: 22px;
+  margin: 0 auto;
+  max-width: 1060px;
+  min-height: calc(100vh - var(--nav-height));
+  padding: 24px 18px 36px;
+}
+
+.spotsHeader {
+  align-items: end;
+  display: grid;
+  gap: 16px;
+  grid-template-columns: minmax(0, 1fr) minmax(300px, 420px);
+}
+
+.sectionEyebrow {
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 800;
+  margin: 0 0 6px;
+  text-transform: uppercase;
+}
+
+.spotsHeader h1 {
+  font-size: 34px;
+  line-height: 1.1;
+  margin: 0;
+}
+
+.spotsSearch {
+  display: grid;
+  gap: 7px;
+}
+
+.spotsTools {
+  align-items: end;
+  display: grid;
+  gap: 10px;
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.spotsSearch span {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.starredFilter {
+  align-items: center;
+  background: #ffffff;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--ink);
+  cursor: pointer;
+  display: inline-flex;
+  gap: 7px;
+  font-weight: 800;
+  min-height: 46px;
+  padding: 0 12px;
+}
+
+.starredFilter:hover,
+.starredFilter.active {
+  border-color: #b0b0b0;
+  box-shadow: var(--soft-shadow);
+}
+
+.starredFilter.active {
+  background: #f7f7f7;
+  border-color: var(--ink);
+  box-shadow: inset 0 0 0 1px var(--ink), var(--soft-shadow);
+  color: var(--ink);
+}
+
+.starredFilter:disabled {
+  background: #f7f7f7;
+  color: var(--muted);
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.starredFilter:disabled:hover {
+  border-color: var(--line);
+  box-shadow: none;
+}
+
+.starIcon {
+  display: block;
+  height: 13px;
+  width: 13px;
+}
+
+.starredFilter .starIcon {
+  color: var(--accent);
+}
+
+.starredFilter:disabled .starIcon {
+  color: #b0b0b0;
+}
+
+.starredFilter strong {
+  align-items: center;
+  background: #f7f7f7;
+  border-radius: 999px;
+  color: var(--muted);
+  display: inline-flex;
+  font-size: 12px;
+  height: 22px;
+  justify-content: center;
+  min-width: 22px;
+  padding: 0 6px;
+}
+
+.starredFilter.active strong {
+  background: var(--ink);
+  color: #ffffff;
+}
+
+.spotsList {
+  align-content: start;
+  display: grid;
+  gap: 10px;
+}
+
+.spotCard {
+  align-items: center;
+  background: #ffffff;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  display: grid;
+  gap: 14px;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  padding: 18px;
+  transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+
+.spotCard:hover {
+  border-color: #c7c7c7;
+  box-shadow: var(--soft-shadow);
+  transform: translateY(-1px);
+}
+
+.spotCardMain {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+}
+
+.spotTitleRow {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+  min-width: 0;
+}
+
+.spotCardMain strong {
+  display: block;
+  font-size: 17px;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+.spotCoords {
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.spotMeta {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.spotActions {
+  display: flex;
+  gap: 8px;
+}
+
+.starButton {
+  align-items: center;
+  background: #ffffff;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: #b0b0b0;
+  cursor: pointer;
+  display: inline-flex;
+  height: 38px;
+  justify-content: center;
+  padding: 0;
+  width: 38px;
+}
+
+.starButton:hover {
+  border-color: #b0b0b0;
+  color: var(--accent);
+}
+
+.starButton.active {
+  background: #fff0f3;
+  border-color: #ffc6d1;
+  color: var(--accent);
+}
+
+.spotActions button,
+.spotActions a {
+  align-items: center;
+  background: #ffffff;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--ink);
+  cursor: pointer;
+  display: inline-flex;
+  font-weight: 800;
+  min-height: 40px;
+  padding: 0 12px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.spotActions button:hover,
+.spotActions a:hover {
+  background: #f7f7f7;
+  border-color: #b0b0b0;
+}
+
+.spotActions a {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #ffffff;
+}
+
+.spotActions a:hover {
+  background: var(--accent-dark);
+  border-color: var(--accent-dark);
+}
+
+.mapSpotsPanel {
+  background: #ffffff;
+  border-left: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-height: 0;
+  overflow: hidden;
+  padding: 18px;
+}
+
+.mapSpotsHeader {
+  align-items: start;
+  display: flex;
+  gap: 14px;
+  justify-content: space-between;
+}
+
+.mapSpotsHeader h2 {
+  font-size: 22px;
+  line-height: 1.1;
+  margin: 0;
+}
+
+.mapSpotsHeader > span {
+  align-items: center;
+  background: #f7f7f7;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--muted);
+  display: inline-flex;
+  font-size: 12px;
+  font-weight: 800;
+  height: 28px;
+  justify-content: center;
+  min-width: 28px;
+  padding: 0 8px;
+}
+
+.mapSpotsSearch {
+  display: grid;
+  gap: 7px;
+}
+
+.mapSpotsTools {
+  display: grid;
+  gap: 10px;
+}
+
+.mapSpotsSearch span {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.mapSpotsList {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 0;
+  overflow: auto;
+  padding: 2px 2px 8px;
+}
+
+.mapSpotItem {
+  align-items: center;
+  background: #ffffff;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--ink);
+  display: grid;
+  gap: 10px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  padding: 10px;
+  transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+  width: 100%;
+}
+
+.mapSpotItem:hover,
+.mapSpotItem.selected {
+  border-color: #c7c7c7;
+  box-shadow: var(--soft-shadow);
+  transform: translateY(-1px);
+}
+
+.mapSpotItem.selected {
+  border-color: #ffc6d1;
+  box-shadow: 0 0 0 1px #ffc6d1;
+}
+
+.mapSpotSelect {
+  background: transparent;
+  border: 0;
+  color: inherit;
+  cursor: pointer;
+  min-width: 0;
+  padding: 4px 0;
+  text-align: left;
+}
+
+.mapSpotSelect:hover {
+  color: var(--ink);
+}
+
+.mapSpotItem strong {
+  display: block;
+  font-size: 14px;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+.mapSpotItem small {
+  color: var(--muted);
+  display: block;
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+.mapSpotItem small.locationCoords {
+  color: var(--ink);
+  font-weight: 600;
+  margin-top: 6px;
+}
+
+.mapSpotSelect > span:first-child {
+  min-width: 0;
+}
+
+.mapSpotItemSkeleton {
+  pointer-events: none;
+}
+
+.spotCardSkeleton {
+  pointer-events: none;
+}
+
+.skeletonLine,
+.skeletonStar,
+.skeletonPill,
+.skeletonButton {
+  animation: skeletonPulse 1100ms ease-in-out infinite;
+  background: linear-gradient(90deg, #eeeeee 0%, #f7f7f7 48%, #eeeeee 100%);
+  background-size: 220% 100%;
+  border-radius: 999px;
+  display: block;
+}
+
+.skeletonLine {
+  height: 12px;
+  width: 70%;
+}
+
+.skeletonLine.title {
+  height: 17px;
+  width: 44%;
+}
+
+.skeletonLine.medium {
+  width: 62%;
+}
+
+.skeletonLine.short {
+  width: 36%;
+}
+
+.skeletonPill {
+  height: 28px;
+  width: 82px;
+}
+
+.skeletonStar {
+  height: 38px;
+  width: 38px;
+}
+
+.skeletonButton {
+  height: 40px;
+  width: 64px;
+}
+
+.skeletonButton.primary {
+  width: 106px;
+}
+
+@keyframes skeletonPulse {
+  0% {
+    background-position: 100% 0;
+  }
+
+  100% {
+    background-position: -100% 0;
+  }
+}
+
+@media (max-width: 860px) {
+  body {
+    font-size: 13px;
+  }
+
+  .aboutIntro,
+  .aboutNotes {
+    grid-template-columns: 1fr;
+  }
+
+  .aboutCopy h1 {
+    font-size: 32px;
+  }
+
+  .aboutImage {
+    min-height: 260px;
+  }
+
+  .shell,
+  .mapStage,
+  .leafletMap {
+    display: block;
+    height: calc(100vh - var(--nav-height));
+    min-height: calc(100vh - var(--nav-height));
+  }
+
+  .mapSpotsPanel {
+    display: none;
+  }
+
+  .mapNavControls {
+    bottom: calc(14px + env(safe-area-inset-bottom));
+    left: 14px;
+    right: auto;
+    transform: none;
+  }
+
+  .mapAlerts {
+    font-size: 13px;
+    left: 12px;
+    max-width: calc(100% - 24px);
+    right: 12px;
+    top: 12px;
+  }
+
+  .mapStatus {
+    left: 12px;
+    top: 12px;
+  }
+
+  .mapStarredFilter {
+    right: 12px;
+    top: 12px;
+  }
+
+  .locateButton {
+    bottom: calc(14px + env(safe-area-inset-bottom));
+    height: 44px;
+    right: 14px;
+    width: 44px;
+  }
+
+  .popupContent {
+    font-size: 12px;
+    min-width: 190px;
+  }
+
+  .popupContent strong {
+    font-size: 13px;
+  }
+
+  .leaflet-control-attribution {
+    font-size: 10px !important;
+  }
+
+  .markerNameTooltip {
+    font-size: 11px;
+    padding: 3px 6px;
+  }
+
+  .spotsHeader {
+    align-items: stretch;
+    grid-template-columns: 1fr;
+  }
+
+  .spotsTools {
+    align-items: stretch;
+    grid-template-columns: 1fr;
+  }
+
+  .spotCard {
+    align-items: start;
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .spotActions {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 520px) {
+  .appNav {
+    padding: 0 10px;
+  }
+
+  .appBrand {
+    font-size: 14px;
+  }
+
+  .appNavLinks {
+    gap: 4px;
+  }
+
+  .appNavLink {
+    min-width: 54px;
+    padding: 10px 7px;
+  }
+
+  .aboutPage {
+    padding: 18px 12px 32px;
+  }
+
+  .aboutCopy h1 {
+    font-size: 27px;
+  }
+
+  .aboutCopy p {
+    font-size: 15px;
+  }
+
+  .aboutImage {
+    min-height: 220px;
+  }
+
+  .aboutNote {
+    padding: 14px;
+  }
+
+  .searchInput {
+    font-size: 16px;
+    min-height: 50px;
+    padding: 0 12px;
+  }
+
+  .spotsPage {
+    padding: 18px 12px 28px;
+  }
+
+  .spotsHeader h1 {
+    font-size: 24px;
+  }
+
+  .spotCard {
+    gap: 10px;
+    padding: 14px 10px;
+  }
+
+  .spotCardMain strong {
+    font-size: 14px;
+  }
+
+  .spotCoords {
+    font-size: 12px;
+  }
+
+  .bearingPill {
+    font-size: 10px;
+    white-space: nowrap;
+  }
+
+  .mapNavControls {
+    bottom: calc(14px + env(safe-area-inset-bottom));
+  }
+}
+
+@media (max-width: 380px) {
+  .mapNavControls {
+    bottom: calc(12px + env(safe-area-inset-bottom));
+    left: 8px;
+  }
+
+  .mapNavControls button {
+    font-size: 11px;
+    padding: 0 9px;
+  }
+
+  .mapNavControls span {
+    font-size: 11px;
+    min-width: 38px;
+  }
+}
