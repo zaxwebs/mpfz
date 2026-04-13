@@ -53,7 +53,7 @@ a {
   padding: 0 24px;
   position: sticky;
   top: 0;
-  z-index: 1000;
+  z-index: 6000;
 }
 
 .appBrand {
@@ -100,9 +100,110 @@ a {
   color: var(--ink);
 }
 
-.aboutPage {
+.appMenuButton {
+  align-items: center;
+  background: #ffffff;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--ink);
+  cursor: pointer;
+  display: none;
+  height: 42px;
+  justify-content: center;
+  padding: 0;
+  width: 42px;
+}
+
+.appMenuButton:hover {
+  border-color: #b0b0b0;
+  box-shadow: var(--soft-shadow);
+}
+
+.appMenuButton svg {
+  display: block;
+  height: 18px;
+  width: 18px;
+}
+
+.appMenuOverlay {
+  align-items: center;
+  display: flex;
+  inset: 0;
+  justify-content: center;
+  padding: 12px;
+  position: fixed;
+  z-index: 5000;
+}
+
+.appMenuBackdrop {
+  background: rgba(0, 0, 0, 0.42);
+  border: 0;
+  backdrop-filter: blur(6px);
+  cursor: pointer;
+  inset: 0;
+  padding: 0;
+  position: absolute;
+}
+
+.appMenuModal {
+  background: #ffffff;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
   display: grid;
-  gap: 24px;
+  gap: 14px;
+  max-width: 420px;
+  padding: 14px;
+  position: relative;
+  width: 100%;
+}
+
+.appMenuHeader {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+
+.appMenuHeader strong {
+  font-size: 16px;
+}
+
+.appMenuHeader button {
+  background: #ffffff;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--ink);
+  cursor: pointer;
+  font-weight: 800;
+  min-height: 36px;
+  padding: 0 12px;
+}
+
+.appMenuLinks {
+  display: grid;
+  gap: 8px;
+}
+
+.appMenuLink {
+  background: #ffffff;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--ink);
+  font-weight: 800;
+  padding: 14px;
+  text-decoration: none;
+}
+
+.appMenuLink:hover,
+.appMenuLink.active {
+  border-color: var(--ink);
+  box-shadow: inset 0 0 0 1px var(--ink);
+}
+
+.aboutPage {
+  align-content: start;
+  display: grid;
+  gap: 18px;
   margin: 0 auto;
   max-width: 1060px;
   min-height: calc(100vh - var(--nav-height));
@@ -110,14 +211,13 @@ a {
 }
 
 .aboutIntro {
-  align-items: stretch;
+  align-content: start;
   display: grid;
-  gap: 24px;
-  grid-template-columns: minmax(0, 0.9fr) minmax(320px, 1.1fr);
+  max-width: 760px;
 }
 
 .aboutCopy {
-  align-content: center;
+  align-content: start;
   display: grid;
   gap: 16px;
   min-width: 0;
@@ -157,27 +257,15 @@ a {
   background: #000000;
 }
 
-.aboutImage {
-  border-radius: 8px;
-  margin: 0;
-  min-height: 360px;
-  overflow: hidden;
-}
-
-.aboutImage img {
-  display: block;
-  height: 100%;
-  object-fit: cover;
-  width: 100%;
-}
-
 .aboutNotes {
+  align-content: start;
   display: grid;
   gap: 12px;
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .aboutNote {
+  align-content: start;
   background: #ffffff;
   border: 1px solid var(--line);
   border-radius: 8px;
@@ -195,6 +283,98 @@ a {
   color: var(--muted);
   line-height: 1.45;
   margin: 0;
+}
+
+.settingsPage {
+  align-content: start;
+  display: grid;
+  gap: 18px;
+  margin: 0 auto;
+  max-width: 780px;
+  min-height: calc(100vh - var(--nav-height));
+  padding: 24px 18px 42px;
+}
+
+.settingsHeader {
+  align-content: start;
+  display: grid;
+  gap: 6px;
+}
+
+.settingsHeader .sectionEyebrow {
+  margin: 0;
+}
+
+.settingsHeader h1 {
+  font-size: 34px;
+  line-height: 1.1;
+  margin: 0;
+}
+
+.settingsHeader p:last-child {
+  color: var(--muted);
+  font-size: 15px;
+  margin: 0;
+}
+
+.settingsSection {
+  align-content: start;
+  background: #ffffff;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  display: grid;
+  gap: 16px;
+  padding: 16px;
+}
+
+.settingsSection h2 {
+  font-size: 18px;
+  line-height: 1.2;
+  margin: 0 0 6px;
+}
+
+.settingsSection p {
+  color: var(--muted);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.settingsOptions {
+  align-content: start;
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.settingsOption {
+  align-content: start;
+  background: #ffffff;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--ink);
+  cursor: pointer;
+  display: grid;
+  gap: 6px;
+  min-height: 92px;
+  padding: 13px;
+  text-align: left;
+}
+
+.settingsOption:hover,
+.settingsOption.active {
+  border-color: var(--ink);
+  box-shadow: inset 0 0 0 1px var(--ink), var(--soft-shadow);
+}
+
+.settingsOption strong {
+  font-size: 17px;
+  line-height: 1.2;
+}
+
+.settingsOption span {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.35;
 }
 
 .shell {
@@ -321,20 +501,21 @@ a {
 }
 
 .bearingPill {
-  background: #f7f7f7;
-  border: 1px solid var(--line);
+  background: transparent;
+  border: 1px solid #e7e7e7;
   border-radius: 999px;
-  color: var(--ink);
+  color: var(--muted);
   flex: 0 0 auto;
-  font-size: 11px;
-  font-weight: 800;
+  font-size: 10px;
+  font-weight: 700;
   line-height: 1;
-  min-width: 30px;
-  padding: 5px 7px;
+  min-width: 26px;
+  padding: 4px 6px;
   text-align: center;
 }
 
 .mapAlerts {
+  align-content: start;
   display: grid;
   gap: 8px;
   left: 22px;
@@ -480,6 +661,7 @@ a {
 }
 
 .popupContent {
+  align-content: start;
   display: grid;
   font-size: 12px;
   gap: 4px;
@@ -585,6 +767,7 @@ a {
 }
 
 .spotsHeader {
+  align-content: start;
   align-items: end;
   display: grid;
   gap: 16px;
@@ -611,6 +794,7 @@ a {
 }
 
 .spotsTools {
+  align-content: start;
   align-items: end;
   display: grid;
   gap: 10px;
@@ -709,7 +893,20 @@ a {
   gap: 14px;
   grid-template-columns: minmax(0, 1fr) auto auto;
   padding: 18px;
+  position: relative;
   transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+
+.spotCardOverlayLink {
+  border-radius: 8px;
+  inset: 0;
+  position: absolute;
+  z-index: 1;
+}
+
+.spotCardOverlayLink:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
 }
 
 .spotCard:hover {
@@ -719,6 +916,7 @@ a {
 }
 
 .spotCardMain {
+  align-content: start;
   display: grid;
   gap: 5px;
   min-width: 0;
@@ -752,6 +950,8 @@ a {
 .spotActions {
   display: flex;
   gap: 8px;
+  position: relative;
+  z-index: 2;
 }
 
 .starButton {
@@ -765,7 +965,9 @@ a {
   height: 38px;
   justify-content: center;
   padding: 0;
+  position: relative;
   width: 38px;
+  z-index: 2;
 }
 
 .starButton:hover {
@@ -852,11 +1054,13 @@ a {
 }
 
 .mapSpotsSearch {
+  align-content: start;
   display: grid;
   gap: 7px;
 }
 
 .mapSpotsTools {
+  align-content: start;
   display: grid;
   gap: 10px;
 }
@@ -878,11 +1082,13 @@ a {
 }
 
 .mapSpotItem {
+  align-content: start;
   align-items: center;
   background: #ffffff;
   border: 1px solid var(--line);
   border-radius: 8px;
   color: var(--ink);
+  cursor: pointer;
   display: grid;
   gap: 10px;
   grid-template-columns: minmax(0, 1fr) auto;
@@ -899,8 +1105,8 @@ a {
 }
 
 .mapSpotItem.selected {
-  border-color: #ffc6d1;
-  box-shadow: 0 0 0 1px #ffc6d1;
+  border-color: var(--accent);
+  box-shadow: none;
 }
 
 .mapSpotSelect {
@@ -1012,7 +1218,6 @@ a {
     font-size: 13px;
   }
 
-  .aboutIntro,
   .aboutNotes {
     grid-template-columns: 1fr;
   }
@@ -1021,8 +1226,8 @@ a {
     font-size: 32px;
   }
 
-  .aboutImage {
-    min-height: 260px;
+  .settingsOptions {
+    grid-template-columns: 1fr;
   }
 
   .shell,
@@ -1107,6 +1312,16 @@ a {
   }
 }
 
+@media (max-width: 640px) {
+  .appNavLinks {
+    display: none;
+  }
+
+  .appMenuButton {
+    display: inline-flex;
+  }
+}
+
 @media (max-width: 520px) {
   .appNav {
     padding: 0 10px;
@@ -1121,8 +1336,9 @@ a {
   }
 
   .appNavLink {
-    min-width: 54px;
-    padding: 10px 7px;
+    font-size: 12px;
+    min-width: 0;
+    padding: 10px 6px;
   }
 
   .aboutPage {
@@ -1137,11 +1353,19 @@ a {
     font-size: 15px;
   }
 
-  .aboutImage {
-    min-height: 220px;
+  .aboutNote {
+    padding: 14px;
   }
 
-  .aboutNote {
+  .settingsPage {
+    padding: 18px 12px 32px;
+  }
+
+  .settingsHeader h1 {
+    font-size: 24px;
+  }
+
+  .settingsSection {
     padding: 14px;
   }
 

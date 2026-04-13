@@ -9,15 +9,27 @@ export const metadata: Metadata = {
 const notes = [
   {
     title: "Source",
-    text: "Locations come from the INCOIS Potential Fishing Zone text advisory for Maharashtra."
+    text: "PFZ locations come from the INCOIS Potential Fishing Zone text advisory for Maharashtra."
   },
   {
     title: "Refresh",
-    text: "The server keeps a local copy and checks for a new advisory once each day after 5:15 PM IST."
+    text: "New data is checked once each day after 5:15 PM IST, after the usual advisory window."
   },
   {
-    title: "Fallback",
-    text: "If INCOIS is temporarily unavailable, the last successful advisory stays available."
+    title: "Cache",
+    text: "The last successful advisory is kept locally, so spots stay available if INCOIS is slow or unavailable."
+  },
+  {
+    title: "Coordinates",
+    text: "Coordinates can be shown as DMS or DDM from Settings, depending on how you prefer to read them."
+  },
+  {
+    title: "Stars",
+    text: "Starred spots are saved on this device and are used by the list, map, and map filter."
+  },
+  {
+    title: "Planning",
+    text: "Use PFZ locations alongside local weather, sea state, and official warnings before heading out."
   }
 ];
 
@@ -29,9 +41,9 @@ export default function AboutPage() {
           <p className="sectionEyebrow">About</p>
           <h1>Potential Fishing Zone spots for Maharashtra.</h1>
           <p>
-            A calmer way to read the daily INCOIS advisory: coastal place,
-            direction, distance, depth, and coordinates in one quick list and
-            map.
+            Daily INCOIS PFZ guidance, organized around the coastal place,
+            direction, distance, depth, and coordinates that matter when
+            planning a fishing trip.
           </p>
           <a
             className="aboutSourceLink"
@@ -42,13 +54,6 @@ export default function AboutPage() {
             Data source: INCOIS
           </a>
         </div>
-        <figure className="aboutImage">
-          <img
-            alt="Fishing boats near the shoreline"
-            loading="lazy"
-            src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1400&q=80"
-          />
-        </figure>
       </section>
 
       <section className="aboutNotes" aria-label="Data notes">

@@ -2,6 +2,15 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
+import {
+  type CoordinateFormat,
+  COORDINATE_FORMAT_CHANGED_EVENT,
+  DEFAULT_COORDINATE_FORMAT,
+  formatLocationCoordinates,
+  getCoordinateFormatLabel,
+  normalizeCoordinateFormat,
+  readCoordinateFormat
+} from "../lib/coordinates";
 import { getDirectionLabel, getDirectionTag } from "../lib/directions";
 import {
   getStarredSpotKey,
@@ -12,10 +21,13 @@ import {
 import StarIcon from "./StarIcon";
 import type { PfzApiResponse, PfzLocation } from "../types/pfz";
 
-function getSpotCopyText(location: PfzLocation) {
+function getSpotCopyText(location: PfzLocation, coordinateFormat: CoordinateFormat) {
   return [
     location.coast,
-    `Location: ${location.latitudeDms}, ${location.longitudeDms}`,
+    `Location (${getCoordinateFormatLabel(coordinateFormat)}): ${formatLocationCoordinates(
+      location,
+      coordinateFormat
+    )}`,
     `Coordinates: ${location.latitude.toFixed(5)}, ${location.longitude.toFixed(5)}`,
     `Direction: ${getDirectionLabel(location.direction)}${
       location.bearingDeg !== null ? `, ${location.bearingDeg} degrees` : ""
@@ -33,6 +45,9 @@ export default function SpotsList() {
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [showStarredOnly, setShowStarredOnly] = useState(false);
   const [starredKeys, setStarredKeys] = useState<string[]>([]);
+  const [coordinateFormat, setCoordinateFormat] = useState<CoordinateFormat>(
+    DEFAULT_COORDINATE_FORMAT
+  );
 
   useEffect(() => {
     async function loadSpots() {
@@ -66,6 +81,29 @@ export default function SpotsList() {
 
   useEffect(() => {
     setStarredKeys(readStarredSpotKeys());
+  }, []);
+
+  useEffect(() => {
+    function updateCoordinateFormat(event?: Event) {
+      const nextFormat =
+        event instanceof CustomEvent
+          ? normalizeCoordinateFormat(event.detail)
+          : readCoordinateFormat();
+
+      setCoordinateFormat(nextFormat ?? readCoordinateFormat());
+    }
+
+    updateCoordinateFormat();
+    window.addEventListener(COORDINATE_FORMAT_CHANGED_EVENT, updateCoordinateFormat);
+    window.addEventListener("storage", updateCoordinateFormat);
+
+    return () => {
+      window.removeEventListener(
+        COORDINATE_FORMAT_CHANGED_EVENT,
+        updateCoordinateFormat
+      );
+      window.removeEventListener("storage", updateCoordinateFormat);
+    };
   }, []);
 
   useEffect(() => {
@@ -111,17 +149,18 @@ export default function SpotsList() {
         location.distanceKm,
         location.depthMtr,
         location.latitudeDms,
-        location.longitudeDms
+        location.longitudeDms,
+        formatLocationCoordinates(location, coordinateFormat)
       ]
         .join(" ")
         .toLowerCase()
         .includes(normalizedQuery)
     );
-  }, [data, query, showStarredOnly, starredSet]);
+  }, [coordinateFormat, data, query, showStarredOnly, starredSet]);
 
   async function copySpot(location: PfzLocation) {
     try {
-      await navigator.clipboard.writeText(getSpotCopyText(location));
+      await navigator.clipboard.writeText(getSpotCopyText(location, coordinateFormat));
       setCopiedId(location.id);
       window.setTimeout(() => setCopiedId(null), 1600);
     } catch {
@@ -223,6 +262,11 @@ export default function SpotsList() {
 
           return (
           <article className={`spotCard ${isStarred ? "starred" : ""}`} key={location.id}>
+            <Link
+              aria-label={`View ${location.coast} on map`}
+              className="spotCardOverlayLink"
+              href={`/map?spot=${encodeURIComponent(location.id)}`}
+            />
             <div className="spotCardMain">
               <div className="spotTitleRow">
                 <strong>{location.coast}</strong>
@@ -231,7 +275,7 @@ export default function SpotsList() {
                 </span>
               </div>
               <span className="spotCoords">
-                {location.latitudeDms}, {location.longitudeDms}
+                {formatLocationCoordinates(location, coordinateFormat)}
               </span>
               <span className="spotMeta">
                 {location.distanceKm} km from coast, {location.depthMtr} m deep

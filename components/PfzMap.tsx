@@ -12,6 +12,15 @@ import {
   useMapEvents,
   useMap
 } from "react-leaflet";
+import {
+  type CoordinateFormat,
+  COORDINATE_FORMAT_CHANGED_EVENT,
+  DEFAULT_COORDINATE_FORMAT,
+  formatLocationCoordinates,
+  getCoordinateFormatLabel,
+  normalizeCoordinateFormat,
+  readCoordinateFormat
+} from "../lib/coordinates";
 import { getDirectionLabel, getDirectionTag } from "../lib/directions";
 import {
   getStarredSpotKey,
@@ -32,10 +41,13 @@ type UserLocation = {
   longitude: number;
 };
 
-function getSpotCopyText(location: PfzLocation) {
+function getSpotCopyText(location: PfzLocation, coordinateFormat: CoordinateFormat) {
   return [
     location.coast,
-    `Location: ${location.latitudeDms}, ${location.longitudeDms}`,
+    `Location (${getCoordinateFormatLabel(coordinateFormat)}): ${formatLocationCoordinates(
+      location,
+      coordinateFormat
+    )}`,
     `Coordinates: ${location.latitude.toFixed(5)}, ${location.longitude.toFixed(5)}`,
     `Direction: ${getDirectionLabel(location.direction)}${
       location.bearingDeg !== null ? `, ${location.bearingDeg} degrees` : ""
@@ -88,7 +100,14 @@ function FlyToSelected({
       animate: false
     });
 
-    markerRefs.current[location.id]?.openPopup();
+    const openSelectedPopup = () => {
+      markerRefs.current[location.id]?.openPopup();
+    };
+
+    openSelectedPopup();
+    const frame = window.requestAnimationFrame(openSelectedPopup);
+
+    return () => window.cancelAnimationFrame(frame);
   }, [focusRequest, location, map, markerRefs]);
 
   return null;
@@ -168,8 +187,12 @@ export default function PfzMap() {
   const [mapZoom, setMapZoom] = useState(7);
   const [starredKeys, setStarredKeys] = useState<string[]>([]);
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [coordinateFormat, setCoordinateFormat] = useState<CoordinateFormat>(
+    DEFAULT_COORDINATE_FORMAT
+  );
   const [userLocation, setUserLocation] = useState<UserLocation | null>(null);
   const markerRefs = useRef<Record<string, LeafletCircleMarker | null>>({});
+  const previousStarredFilterRef = useRef(showSidebarStarredOnly);
 
   async function loadData() {
     setIsLoading(true);
@@ -204,7 +227,7 @@ export default function PfzMap() {
         setSelectedFocusRequest((request) => request + 1);
       } else {
         setSelectedId(payload.locations[0]?.id ?? null);
-        setSelectedFocusRequest(0);
+        setSelectedFocusRequest((request) => request + 1);
       }
     } catch (loadError) {
       setError(
@@ -223,6 +246,29 @@ export default function PfzMap() {
 
   useEffect(() => {
     setStarredKeys(readStarredSpotKeys());
+  }, []);
+
+  useEffect(() => {
+    function updateCoordinateFormat(event?: Event) {
+      const nextFormat =
+        event instanceof CustomEvent
+          ? normalizeCoordinateFormat(event.detail)
+          : readCoordinateFormat();
+
+      setCoordinateFormat(nextFormat ?? readCoordinateFormat());
+    }
+
+    updateCoordinateFormat();
+    window.addEventListener(COORDINATE_FORMAT_CHANGED_EVENT, updateCoordinateFormat);
+    window.addEventListener("storage", updateCoordinateFormat);
+
+    return () => {
+      window.removeEventListener(
+        COORDINATE_FORMAT_CHANGED_EVENT,
+        updateCoordinateFormat
+      );
+      window.removeEventListener("storage", updateCoordinateFormat);
+    };
   }, []);
 
   const allLocations = useMemo(() => {
@@ -257,19 +303,40 @@ export default function PfzMap() {
         location.distanceKm,
         location.depthMtr,
         location.latitudeDms,
-        location.longitudeDms
+        location.longitudeDms,
+        formatLocationCoordinates(location, coordinateFormat)
       ]
         .join(" ")
         .toLowerCase()
         .includes(normalizedQuery)
     );
-  }, [filteredLocations, sidebarQuery]);
+  }, [coordinateFormat, filteredLocations, sidebarQuery]);
 
   const selectedLocation =
     (data?.locations ?? []).find((location) => location.id === selectedId) ?? null;
   const selectedFilteredIndex = filteredLocations.findIndex(
     (location) => location.id === selectedId
   );
+
+  useEffect(() => {
+    const didStarredFilterChange =
+      previousStarredFilterRef.current !== showSidebarStarredOnly;
+
+    previousStarredFilterRef.current = showSidebarStarredOnly;
+
+    if (!didStarredFilterChange) {
+      return;
+    }
+
+    if (filteredLocations.length === 0) {
+      setSelectedId(null);
+      setSelectedFocusRequest(0);
+      return;
+    }
+
+    setSelectedId(filteredLocations[0].id);
+    setSelectedFocusRequest((request) => request + 1);
+  }, [filteredLocations, showSidebarStarredOnly]);
 
   useEffect(() => {
     if (
@@ -303,7 +370,7 @@ export default function PfzMap() {
 
   async function copySpot(location: PfzLocation) {
     try {
-      await navigator.clipboard.writeText(getSpotCopyText(location));
+      await navigator.clipboard.writeText(getSpotCopyText(location, coordinateFormat));
       setCopiedId(location.id);
       window.setTimeout(() => setCopiedId(null), 1600);
     } catch {
@@ -429,7 +496,7 @@ export default function PfzMap() {
                     <span>{location.distanceKm} km from coast</span>
                     <span>{location.depthMtr} m deep</span>
                     <span>
-                      {location.latitudeDms}, {location.longitudeDms}
+                      {formatLocationCoordinates(location, coordinateFormat)}
                     </span>
                     <div className="popupActions">
                       <button
@@ -605,10 +672,14 @@ export default function PfzMap() {
                   location.id === selectedId ? "selected" : ""
                 } ${isStarred ? "starred" : ""}`}
                 key={location.id}
+                onClick={() => focusPlace(location.id)}
               >
                 <button
                   className="mapSpotSelect"
-                  onClick={() => focusPlace(location.id)}
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    focusPlace(location.id);
+                  }}
                   type="button"
                 >
                   <span>
@@ -619,7 +690,7 @@ export default function PfzMap() {
                       </span>
                     </span>
                     <small className="locationCoords">
-                      {location.latitudeDms}, {location.longitudeDms}
+                      {formatLocationCoordinates(location, coordinateFormat)}
                     </small>
                     <small>
                       {location.distanceKm} km from coast, {location.depthMtr} m deep
@@ -632,7 +703,10 @@ export default function PfzMap() {
                   }
                   aria-pressed={isStarred}
                   className={`starButton ${isStarred ? "active" : ""}`}
-                  onClick={() => toggleStarred(location)}
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    toggleStarred(location);
+                  }}
                   title={isStarred ? "Unstar spot" : "Star spot"}
                   type="button"
                 >
