@@ -21,6 +21,14 @@ import {
   normalizeCoordinateFormat,
   readCoordinateFormat
 } from "../lib/coordinates";
+import {
+  type DepthUnit,
+  DEFAULT_DEPTH_UNIT,
+  DEPTH_UNIT_CHANGED_EVENT,
+  formatDepthRange,
+  normalizeDepthUnit,
+  readDepthUnit
+} from "../lib/depthUnits";
 import { getDirectionLabel, getDirectionTag } from "../lib/directions";
 import {
   getStarredSpotKey,
@@ -41,7 +49,11 @@ type UserLocation = {
   longitude: number;
 };
 
-function getSpotCopyText(location: PfzLocation, coordinateFormat: CoordinateFormat) {
+function getSpotCopyText(
+  location: PfzLocation,
+  coordinateFormat: CoordinateFormat,
+  depthUnit: DepthUnit
+) {
   return [
     location.coast,
     `Location (${getCoordinateFormatLabel(coordinateFormat)}): ${formatLocationCoordinates(
@@ -53,7 +65,7 @@ function getSpotCopyText(location: PfzLocation, coordinateFormat: CoordinateForm
       location.bearingDeg !== null ? `, ${location.bearingDeg} degrees` : ""
     }`,
     `Distance from coast: ${location.distanceKm} km`,
-    `Water depth: ${location.depthMtr} m`
+    `Water depth: ${formatDepthRange(location.depthMtr, depthUnit)}`
   ].join("\n");
 }
 
@@ -83,16 +95,18 @@ function FitToLocations({ locations }: { locations: PfzLocation[] }) {
 function FlyToSelected({
   focusRequest,
   location,
-  markerRefs
+  markerRefs,
+  suppressFocus
 }: {
   focusRequest: number;
   location: PfzLocation | null;
   markerRefs: React.MutableRefObject<Record<string, LeafletCircleMarker | null>>;
+  suppressFocus: boolean;
 }) {
   const map = useMap();
 
   useEffect(() => {
-    if (!location || focusRequest === 0) {
+    if (suppressFocus || !location || focusRequest === 0) {
       return;
     }
 
@@ -108,7 +122,7 @@ function FlyToSelected({
     const frame = window.requestAnimationFrame(openSelectedPopup);
 
     return () => window.cancelAnimationFrame(frame);
-  }, [focusRequest, location, map, markerRefs]);
+  }, [focusRequest, location, map, markerRefs, suppressFocus]);
 
   return null;
 }
@@ -153,8 +167,8 @@ function UserLocationMarker({ location }: { location: UserLocation | null }) {
       center={[location.latitude, location.longitude]}
       radius={9}
       pathOptions={{
-        color: "#008a7e",
-        fillColor: "#00a699",
+        color: "#ffffff",
+        fillColor: "#1a73e8",
         fillOpacity: 0.95,
         weight: 3
       }}
@@ -190,9 +204,11 @@ export default function PfzMap() {
   const [coordinateFormat, setCoordinateFormat] = useState<CoordinateFormat>(
     DEFAULT_COORDINATE_FORMAT
   );
+  const [depthUnit, setDepthUnit] = useState<DepthUnit>(DEFAULT_DEPTH_UNIT);
   const [userLocation, setUserLocation] = useState<UserLocation | null>(null);
   const markerRefs = useRef<Record<string, LeafletCircleMarker | null>>({});
   const previousStarredFilterRef = useRef(showSidebarStarredOnly);
+  const isUserLocationFocusRef = useRef(false);
 
   async function loadData() {
     setIsLoading(true);
@@ -268,6 +284,26 @@ export default function PfzMap() {
         updateCoordinateFormat
       );
       window.removeEventListener("storage", updateCoordinateFormat);
+    };
+  }, []);
+
+  useEffect(() => {
+    function updateDepthUnit(event?: Event) {
+      const nextUnit =
+        event instanceof CustomEvent
+          ? normalizeDepthUnit(event.detail)
+          : readDepthUnit();
+
+      setDepthUnit(nextUnit ?? readDepthUnit());
+    }
+
+    updateDepthUnit();
+    window.addEventListener(DEPTH_UNIT_CHANGED_EVENT, updateDepthUnit);
+    window.addEventListener("storage", updateDepthUnit);
+
+    return () => {
+      window.removeEventListener(DEPTH_UNIT_CHANGED_EVENT, updateDepthUnit);
+      window.removeEventListener("storage", updateDepthUnit);
     };
   }, []);
 
@@ -353,13 +389,17 @@ export default function PfzMap() {
   }
 
   function focusPlace(locationId: string) {
+    isUserLocationFocusRef.current = false;
+    setUserLocation(null);
     setSelectedId(locationId);
     setSelectedFocusRequest((request) => request + 1);
   }
 
   async function copySpot(location: PfzLocation) {
     try {
-      await navigator.clipboard.writeText(getSpotCopyText(location, coordinateFormat));
+      await navigator.clipboard.writeText(
+        getSpotCopyText(location, coordinateFormat, depthUnit)
+      );
       setCopiedId(location.id);
       window.setTimeout(() => setCopiedId(null), 1600);
     } catch {
@@ -396,6 +436,8 @@ export default function PfzMap() {
 
     setIsLocating(true);
     setLocationError(null);
+    isUserLocationFocusRef.current = true;
+    setUserLocation(null);
     setSelectedId(null);
     setSelectedFocusRequest(0);
     Object.values(markerRefs.current).forEach((marker) => marker?.closePopup());
@@ -410,6 +452,7 @@ export default function PfzMap() {
         setIsLocating(false);
       },
       (positionError) => {
+        isUserLocationFocusRef.current = false;
         setLocationError(
           positionError.code === positionError.PERMISSION_DENIED
             ? "Location permission was blocked."
@@ -445,6 +488,7 @@ export default function PfzMap() {
             focusRequest={selectedFocusRequest}
             location={selectedLocation}
             markerRefs={markerRefs}
+            suppressFocus={userLocation !== null || isUserLocationFocusRef.current}
           />
           <TrackMapZoom onZoomChange={setMapZoom} />
           <UserLocationMarker location={userLocation} />
@@ -483,7 +527,7 @@ export default function PfzMap() {
                         : ""}
                     </span>
                     <span>{location.distanceKm} km from coast</span>
-                    <span>{location.depthMtr} m deep</span>
+                    <span>{formatDepthRange(location.depthMtr, depthUnit)} deep</span>
                     <span>
                       {formatLocationCoordinates(location, coordinateFormat)}
                     </span>
@@ -681,7 +725,8 @@ export default function PfzMap() {
                       {formatLocationCoordinates(location, coordinateFormat)}
                     </small>
                     <small>
-                      {location.distanceKm} km from coast, {location.depthMtr} m deep
+                      {location.distanceKm} km from coast,{" "}
+                      {formatDepthRange(location.depthMtr, depthUnit)} deep
                     </small>
                   </span>
                 </button>

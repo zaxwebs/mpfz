@@ -11,6 +11,14 @@ import {
   normalizeCoordinateFormat,
   readCoordinateFormat
 } from "../lib/coordinates";
+import {
+  type DepthUnit,
+  DEFAULT_DEPTH_UNIT,
+  DEPTH_UNIT_CHANGED_EVENT,
+  formatDepthRange,
+  normalizeDepthUnit,
+  readDepthUnit
+} from "../lib/depthUnits";
 import { getDirectionLabel, getDirectionTag } from "../lib/directions";
 import {
   getStarredSpotKey,
@@ -21,7 +29,11 @@ import {
 import StarIcon from "./StarIcon";
 import type { PfzApiResponse, PfzLocation } from "../types/pfz";
 
-function getSpotCopyText(location: PfzLocation, coordinateFormat: CoordinateFormat) {
+function getSpotCopyText(
+  location: PfzLocation,
+  coordinateFormat: CoordinateFormat,
+  depthUnit: DepthUnit
+) {
   return [
     location.coast,
     `Location (${getCoordinateFormatLabel(coordinateFormat)}): ${formatLocationCoordinates(
@@ -33,7 +45,7 @@ function getSpotCopyText(location: PfzLocation, coordinateFormat: CoordinateForm
       location.bearingDeg !== null ? `, ${location.bearingDeg} degrees` : ""
     }`,
     `Distance from coast: ${location.distanceKm} km`,
-    `Water depth: ${location.depthMtr} m`
+    `Water depth: ${formatDepthRange(location.depthMtr, depthUnit)}`
   ].join("\n");
 }
 
@@ -48,6 +60,7 @@ export default function SpotsList() {
   const [coordinateFormat, setCoordinateFormat] = useState<CoordinateFormat>(
     DEFAULT_COORDINATE_FORMAT
   );
+  const [depthUnit, setDepthUnit] = useState<DepthUnit>(DEFAULT_DEPTH_UNIT);
 
   useEffect(() => {
     async function loadSpots() {
@@ -107,6 +120,26 @@ export default function SpotsList() {
   }, []);
 
   useEffect(() => {
+    function updateDepthUnit(event?: Event) {
+      const nextUnit =
+        event instanceof CustomEvent
+          ? normalizeDepthUnit(event.detail)
+          : readDepthUnit();
+
+      setDepthUnit(nextUnit ?? readDepthUnit());
+    }
+
+    updateDepthUnit();
+    window.addEventListener(DEPTH_UNIT_CHANGED_EVENT, updateDepthUnit);
+    window.addEventListener("storage", updateDepthUnit);
+
+    return () => {
+      window.removeEventListener(DEPTH_UNIT_CHANGED_EVENT, updateDepthUnit);
+      window.removeEventListener("storage", updateDepthUnit);
+    };
+  }, []);
+
+  useEffect(() => {
     if (!data) {
       return;
     }
@@ -149,7 +182,9 @@ export default function SpotsList() {
 
   async function copySpot(location: PfzLocation) {
     try {
-      await navigator.clipboard.writeText(getSpotCopyText(location, coordinateFormat));
+      await navigator.clipboard.writeText(
+        getSpotCopyText(location, coordinateFormat, depthUnit)
+      );
       setCopiedId(location.id);
       window.setTimeout(() => setCopiedId(null), 1600);
     } catch {
@@ -266,7 +301,8 @@ export default function SpotsList() {
                 {formatLocationCoordinates(location, coordinateFormat)}
               </span>
               <span className="spotMeta">
-                {location.distanceKm} km from coast, {location.depthMtr} m deep
+                {location.distanceKm} km from coast,{" "}
+                {formatDepthRange(location.depthMtr, depthUnit)} deep
               </span>
             </div>
             <button

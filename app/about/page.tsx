@@ -8,28 +8,28 @@ export const metadata: Metadata = {
 
 const notes = [
   {
-    title: "Source",
-    text: "PFZ locations come from the INCOIS Potential Fishing Zone text advisory for Maharashtra."
+    title: "What PFZ Means",
+    text: "Potential Fishing Zones identify ocean areas where fish aggregation is more likely."
   },
   {
-    title: "Refresh",
-    text: "New data is checked once each day after 5:15 PM IST, after the usual advisory window."
+    title: "How It Is Derived",
+    text: "PFZ advisories use satellite observations such as sea surface temperature and chlorophyll."
   },
   {
-    title: "Cache",
-    text: "The last successful advisory is kept locally, so spots stay available if INCOIS is slow or unavailable."
+    title: "Coastal Reference",
+    text: "Each entry starts from a named coast and points toward the suggested offshore zone."
   },
   {
-    title: "Coordinates",
-    text: "Coordinates can be shown as DMS or DDM from Settings, depending on how you prefer to read them."
+    title: "Direction",
+    text: "Direction and bearing describe where the fishing zone lies from the listed coastal place."
   },
   {
-    title: "Stars",
-    text: "Starred spots are saved on this device and are used by the list, map, and map filter."
+    title: "Distance And Depth",
+    text: "Distance from coast and water depth are advisory ranges for the suggested zone."
   },
   {
-    title: "Planning",
-    text: "Use PFZ locations alongside local weather, sea state, and official warnings before heading out."
+    title: "Safe Use",
+    text: "PFZ guidance should be used with weather, sea-state, navigation, and official warning information."
   }
 ];
 
@@ -41,9 +41,9 @@ export default function AboutPage() {
           <p className="sectionEyebrow">About</p>
           <h1>Potential Fishing Zone spots for Maharashtra.</h1>
           <p>
-            Daily INCOIS PFZ guidance, organized around the coastal place,
-            direction, distance, depth, and coordinates that matter when
-            planning a fishing trip.
+            INCOIS PFZ advisories highlight offshore areas where fishing
+            potential may be higher, using coastal references, direction,
+            distance, depth, and coordinates.
           </p>
           <a
             className="aboutSourceLink"
